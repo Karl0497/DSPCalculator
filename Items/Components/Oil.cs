@@ -6,5 +6,9 @@ namespace DSPCalculator.Items.Components
 {
     public class Oil : BaseItem
     {
+        public Oil()
+        {
+
+        }
     }
 }

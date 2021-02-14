@@ -9,4 +9,9 @@
     <Folder Include="Items\Structures\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="5.5.3" />
+    <PackageReference Include="Fractions" Version="5.0.1" />
+  </ItemGroup>
+
 </Project>

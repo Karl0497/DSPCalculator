@@ -17,7 +17,12 @@ namespace DSPCalculator.Items
 
         public static BaseItem GetItem(Type type)
         {
-            return AllItems.First(x => x.GetType() == type);
+            return AllItems.FirstOrDefault(x => x.GetType() == type);
+        }
+
+        public static BaseItem GetItem(string className)
+        {
+            return AllItems.FirstOrDefault(x => x.GetType().Name == className);
         }
 
         public static BaseItem GetItem<T>() where T : BaseItem
@@ -34,5 +39,9 @@ namespace DSPCalculator.Items
         {
             GetItem<T>().RequestedOutput += amount;
         }
+        public static int STARTING_ROW = 1;
+        public static int STARTING_COLUMN = 1;
+        public static string ITEM = "Item";
+        public const string REQUESTED_OUTPUT = "Requested Output";
     }
 }
