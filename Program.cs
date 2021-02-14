@@ -5,6 +5,7 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -70,7 +71,7 @@ namespace DSPCalculator
 
                 
                 item.RequestedOutput += Convert.ToDecimal(requestCell.Value);
-
+                item.RequiredOutput = item.RequestedOutput;
                 row++;
             }
         }
@@ -122,11 +123,13 @@ namespace DSPCalculator
 
         public static void OpenExcelFile()
         {
-            string path = @"C:\Users\khoan\Desktop\DysonCalculator.xlsx";
-            FileInfo fileInfo = new FileInfo(path);
+            Process[] excelProcesses = Process.GetProcessesByName("excel");
+            excelProcesses.FirstOrDefault(x => x.MainWindowTitle.Contains(GlobalHelper.FILENAME))?.Kill();
+
+            FileInfo fileInfo = new FileInfo(GlobalHelper.PATH);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             Package = new ExcelPackage(fileInfo);
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             Worksheet = Package.Workbook.Worksheets.FirstOrDefault();
         }
 
@@ -171,11 +174,15 @@ namespace DSPCalculator
                     Package.Save();
                 }
             }
+
+            Process p = new Process();
+            p.StartInfo.UseShellExecute = true;
+            p.StartInfo.FileName = GlobalHelper.PATH;
+            p.Start();
         }
 
         public static void Main(string[] args)
-        {
-
+        {        
             IEnumerable<Type> allItemTypes = AppDomain.CurrentDomain.GetAssemblies()
                        .SelectMany(assembly => assembly.GetTypes())
                        .Where(type => type.IsSubclassOf(typeof(BaseItem)))
@@ -200,7 +207,7 @@ namespace DSPCalculator
                 item.CalculateProductionChain();
 
             }
-
+            
             WriteExcelFile();
         }
     }

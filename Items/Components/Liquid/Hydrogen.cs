@@ -9,7 +9,7 @@ namespace DSPCalculator.Items.Components
         public Hydrogen()
         {
             MainRecipe = new Recipe()
-                .WithInput<Oil>(2)
+                .WithInput<CrudeOil>(2)
                 .WithOutput<Hydrogen>(1)
                 .WithOutput<RefinedOil>(2)
                 .WithCycleTime(4);

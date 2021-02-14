@@ -41,7 +41,7 @@ namespace DSPCalculator.Items
 
 
 
-            return (decimal)itemsPerSecond / CycleTime * 60 * multipler;
+            return (decimal)itemsPerSecond * 60 * multipler / CycleTime;
 
         }
 
@@ -58,11 +58,11 @@ namespace DSPCalculator.Items
 
 
 
-            return (decimal)itemsPerSecond / CycleTime * 60 * multipler;
+            return (decimal)itemsPerSecond * 60 * multipler / CycleTime ;
 
         }
 
-        public int CycleTime; // items per second
+        public decimal CycleTime;
 
         public bool IsProducedInAssembler;
 
@@ -93,6 +93,11 @@ namespace DSPCalculator.Items
             IsProducedInAssembler = true;
 
             return this;
+        }
+
+        public Recipe WithBasicProduction<T1, T2>(int input, int output, int sec) where T1 : BaseItem where T2 : BaseItem
+        {
+            return WithInput<T1>(input).WithOutput<T2>(output).WithCycleTime(sec);
         }
     }
 }

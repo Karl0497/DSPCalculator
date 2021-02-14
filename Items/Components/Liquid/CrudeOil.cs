@@ -4,9 +4,9 @@ using System.Text;
 
 namespace DSPCalculator.Items.Components
 {
-    public class Oil : BaseItem
+    public class CrudeOil : BaseItem
     {
-        public Oil()
+        public CrudeOil()
         {
 
         }

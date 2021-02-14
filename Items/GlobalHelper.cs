@@ -35,13 +35,11 @@ namespace DSPCalculator.Items
             return AllItems.Where(x => !x.IsOutputSatisfied()).ToList();
         }
 
-        public static void Request<T>(int amount) where T : BaseItem
-        {
-            GetItem<T>().RequestedOutput += amount;
-        }
         public static int STARTING_ROW = 1;
         public static int STARTING_COLUMN = 1;
         public static string ITEM = "Item";
         public const string REQUESTED_OUTPUT = "Requested Output";
+        public static string FILENAME = "DysonCalculator.xlsx";
+        public static string PATH = $@"C:\Users\khoan\Desktop\{FILENAME}"; 
     }
 }
