@@ -18,7 +18,7 @@ namespace DSPCalculator.Items
 
         public Recipe AlternativeRecipe = null;
 
-        public bool debug { get { return this.GetType().Name == "Graphene"; } }
+        public bool debug { get { return this.GetType().Name == "Steel"; } }
             
         /// <summary>
         /// Max number of assemblers/smelters/etc. for a full belt or products based on the output, assuming 1 product per belt because only maniacs would put all products on the same belt
@@ -124,7 +124,7 @@ namespace DSPCalculator.Items
         public bool IsOutputSatisfied()
         {
             // If current production chain can provide more than needed OR the product is at the lowest level, e.g. Ores
-            return ActualRequiredOutput >= RequiredOutput || Recipe == null;
+            return ActualRequiredOutput >= RequiredOutput;
         }
 
         private void CalculateStructureLimit_Output()
@@ -175,6 +175,12 @@ namespace DSPCalculator.Items
 
         public void CalculateProductionChain()
         {
+            // Lowest level materials, e.g. ores
+            if (Recipe == null)
+            {
+                ActualRequiredOutput = RequiredOutput;
+                return;
+            }
             decimal currentOutputRate = Recipe.OutputProductionRate(GetType());
             decimal outputRateDelta = RequiredOutput - ActualRequiredOutput;
             decimal scale = Math.Ceiling(outputRateDelta / currentOutputRate);

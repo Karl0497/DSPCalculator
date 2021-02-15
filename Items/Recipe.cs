@@ -66,23 +66,23 @@ namespace DSPCalculator.Items
 
         public bool IsProducedInAssembler;
 
-        public Recipe WithInput<T>(int amount) where T : BaseItem
+        public Recipe WithInput<T>(int amount = 1) where T : BaseItem
         {
             Input.Add(new ItemToAmount(typeof(T), amount));
 
             return this;
         }
 
-        public Recipe WithOutput<T>(int amount) where T : BaseItem
+        public Recipe WithOutput<T>(int amount = 1) where T : BaseItem
         {
             Output.Add(new ItemToAmount(typeof(T), amount));
 
             return this;
         }
 
-        public Recipe WithCycleTime(int sec)
+        public Recipe WithCycleTime(double sec = 1)
         {
-            CycleTime = sec;
+            CycleTime = (decimal)sec;
 
             return this;
         }
@@ -95,7 +95,7 @@ namespace DSPCalculator.Items
             return this;
         }
 
-        public Recipe WithBasicProduction<T1, T2>(int input, int output, int sec) where T1 : BaseItem where T2 : BaseItem
+        public Recipe WithBasicProduction<T1, T2>(int input, int output, double sec) where T1 : BaseItem where T2 : BaseItem
         {
             return WithInput<T1>(input).WithOutput<T2>(output).WithCycleTime(sec);
         }
