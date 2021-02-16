@@ -7,7 +7,7 @@ namespace DSPCalculator.Items
 {
     public static class GlobalHelper
     {
-        public static decimal AssemblerSpeedMultiplier = 1; // Mk. 1 = 0.75; Mk. 2 = 1; Mk.3 = 1.5
+        public static decimal AssemblerSpeedMultiplier = 1.5m; // Mk. 1 = 0.75; Mk. 2 = 1; Mk.3 = 1.5
 
         public static decimal OrePerSecondPerNode = 36;
 

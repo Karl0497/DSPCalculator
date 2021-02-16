@@ -8,7 +8,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public MagneticCoil()
         {
-            MainRecipe = new Recipe().WithInput<Magnet>(2).WithInput<CopperIngot>(1).WithCycleTime(1).WithOutput<MagneticCoil>(2);
+            MainRecipe = new Recipe().WithInput<Magnet>(2).WithInput<CopperIngot>(1).WithCycleTime(1).WithOutput<MagneticCoil>(2).ProducedInAssembler();
         }
     }
 }

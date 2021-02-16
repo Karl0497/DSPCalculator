@@ -18,7 +18,7 @@ namespace DSPCalculator.Items
 
         public Recipe AlternativeRecipe = null;
 
-        public bool debug { get { return this.GetType().Name == "Steel"; } }
+        public bool debug { get { return this.GetType().Name == "CasimirCrystal"; } }
             
         /// <summary>
         /// Max number of assemblers/smelters/etc. for a full belt or products based on the output, assuming 1 product per belt because only maniacs would put all products on the same belt
@@ -88,7 +88,7 @@ namespace DSPCalculator.Items
                 }
 
                 decimal currentOutputRate = Recipe.OutputProductionRate(GetType());
-                decimal numOfStructs = Math.Ceiling(ActualRequiredOutput / currentOutputRate);
+                decimal numOfStructs = Math.Ceiling(ActualOutput / currentOutputRate);
 
                 return numOfStructs;
             }         
@@ -111,20 +111,24 @@ namespace DSPCalculator.Items
             }
         }
 
+        [Description("Produced in assembler")]
+        public bool ProducedInAssembler => Recipe == null ? false : Recipe.IsProducedInAssembler;
+
         // requested output of an item from the excel sheet
         [Description(GlobalHelper.REQUESTED_OUTPUT)]
         public decimal RequestedOutput;
 
         // this is used for calculating only so that it doesnt double up values when rerunning the script on the same file
+        [Description("Required Output")]
         public decimal RequiredOutput;
 
         [Description("Actual Output")]
-        public decimal ActualRequiredOutput;
+        public decimal ActualOutput;
 
         public bool IsOutputSatisfied()
         {
-            // If current production chain can provide more than needed OR the product is at the lowest level, e.g. Ores
-            return ActualRequiredOutput >= RequiredOutput;
+            // If current production chain can provide more than needed
+            return ActualOutput >= RequiredOutput;
         }
 
         private void CalculateStructureLimit_Output()
@@ -141,7 +145,7 @@ namespace DSPCalculator.Items
                 decimal beltSpeed = GlobalHelper.BeltSpeed;
                 max = Math.Min(beltSpeed / outputRate, max);
             }
-            StructureLimit_Output = max;
+            StructureLimit_Output = Math.Round(max,2);
         }
 
         private void CalculateStructureLimit_Input()
@@ -159,7 +163,7 @@ namespace DSPCalculator.Items
                 max = Math.Min(beltSpeed / inputRate, max);
             }
 
-            StructureLimit_Input = max;
+            StructureLimit_Input = Math.Round(max, 2);
         }
 
         /// <summary>
@@ -178,11 +182,11 @@ namespace DSPCalculator.Items
             // Lowest level materials, e.g. ores
             if (Recipe == null)
             {
-                ActualRequiredOutput = RequiredOutput;
+                ActualOutput = RequiredOutput;
                 return;
             }
             decimal currentOutputRate = Recipe.OutputProductionRate(GetType());
-            decimal outputRateDelta = RequiredOutput - ActualRequiredOutput;
+            decimal outputRateDelta = RequiredOutput - ActualOutput;
             decimal scale = Math.Ceiling(outputRateDelta / currentOutputRate);
 
             foreach (ItemToAmount input in Recipe.Input)
@@ -194,7 +198,7 @@ namespace DSPCalculator.Items
             foreach (ItemToAmount output in Recipe.Output)
             {
                 BaseItem item = GlobalHelper.GetItem(output.ItemType);
-                item.ActualRequiredOutput += Recipe.OutputProductionRate(output.ItemType) * scale;
+                item.ActualOutput += Recipe.OutputProductionRate(output.ItemType) * scale;
             }
         }
     }

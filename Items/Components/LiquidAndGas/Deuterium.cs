@@ -8,7 +8,7 @@ namespace DSPCalculator.Items.Components.LiquidAndGas
     {
         public Deuterium()
         {
-            //MainRecipe = new Recipe().
+            MainRecipe = new Recipe().WithBasicProduction<Hydrogen, Deuterium>(10, 5, 5);
         }
     }
 }
