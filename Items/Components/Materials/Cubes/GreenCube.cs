@@ -9,7 +9,7 @@ namespace DSPCalculator.Items.Components.Materials.Cubes
     {
         public GreenCube()
         {
-            MainRecipe = new Recipe().WithInput<GravitonLens>().WithInput<PlaneFilter>().WithOutput<GreenCube>(2).WithCycleTime(24);
+            MainRecipe = new Recipe().WithInput<GravitonLens>().WithInput<QuantumChip>().WithOutput<GreenCube>(2).WithCycleTime(24);
         }
     }
 }

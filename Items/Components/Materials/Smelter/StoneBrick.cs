@@ -9,7 +9,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public StoneBrick()
         {
-            MainRecipe = new Recipe().WithBasicProduction<StoneOre, StoneBrick>(1, 1, 1);
+            MainRecipe = new Recipe().WithBasicProduction<StoneOre, StoneBrick>(1, 1, 1).ProducedInSmelter();
         }
     }
 }

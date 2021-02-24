@@ -9,7 +9,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public CopperIngot()
         {
-            MainRecipe = new Recipe().WithInput<CopperOre>(1).WithOutput<CopperIngot>(1).WithCycleTime(1);
+            MainRecipe = new Recipe().WithInput<CopperOre>(1).WithOutput<CopperIngot>(1).WithCycleTime(1).ProducedInSmelter();
         }
     }
 }

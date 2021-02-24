@@ -8,7 +8,11 @@ namespace DSPCalculator.Items.Components
     {
         public RefinedOil()
         {
-            MainRecipe = GlobalHelper.GetItem<Hydrogen>().MainRecipe;
+            MainRecipe = new Recipe()
+                .WithInput<CrudeOil>(2)
+                .WithOutput<Hydrogen>(1)
+                .WithOutput<RefinedOil>(2)
+                .WithCycleTime(4);
         }
     }
 }

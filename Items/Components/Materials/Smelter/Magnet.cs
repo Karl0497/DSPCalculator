@@ -9,7 +9,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public Magnet()
         {
-            MainRecipe = new Recipe().WithBasicProduction<IronOre, Magnet>(1, 1, 1.5).ProducedInAssembler();
+            MainRecipe = new Recipe().WithBasicProduction<IronOre, Magnet>(1, 1, 1.5).ProducedInSmelter();
         }
     }
 }

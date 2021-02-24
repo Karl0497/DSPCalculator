@@ -9,7 +9,6 @@ namespace DSPCalculator.Items.Components.Liquid
     {
         public SulfuricAcid()
         {
-            MainRecipe = new Recipe().WithInput<RefinedOil>(6).WithInput<StoneOre>(8).WithInput<Water>(4).WithOutput<SulfuricAcid>(4).WithCycleTime(6);
         }
     }
 }

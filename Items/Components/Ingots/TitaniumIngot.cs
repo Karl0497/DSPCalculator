@@ -9,7 +9,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public TitaniumIngot()
         {
-            MainRecipe = new Recipe().WithInput<TitaniumOre>(2).WithCycleTime(2).WithOutput<TitaniumIngot>(1);
+            MainRecipe = new Recipe().WithInput<TitaniumOre>(2).WithCycleTime(2).WithOutput<TitaniumIngot>(1).ProducedInSmelter();
         }
     }
 }

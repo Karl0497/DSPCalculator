@@ -14,6 +14,28 @@ namespace DSPCalculator.Items
 
         }
 
+        public static IList<BaseItem> AllItems = new List<BaseItem>();
+
+        public static BaseItem GetItem(Type type)
+        {
+            return AllItems.FirstOrDefault(x => x.GetType() == type);
+        }
+
+        public static BaseItem GetItem(string className)
+        {
+            return AllItems.FirstOrDefault(x => x.GetType().Name == className);
+        }
+
+        public static BaseItem GetItem<T>() where T : BaseItem
+        {
+            return GetItem(typeof(T));
+        }
+
+        public static IList<BaseItem> ItemsToProcess()
+        {
+            return AllItems.Where(x => !x.IsOutputSatisfied()).ToList();
+        }
+
         public Recipe MainRecipe = null;
 
         public Recipe AlternativeRecipe = null;
@@ -24,34 +46,15 @@ namespace DSPCalculator.Items
         /// Max number of assemblers/smelters/etc. for a full belt or products based on the output, assuming 1 product per belt because only maniacs would put all products on the same belt
         /// No overflowing allowed, i.e. if the prod rate is 2 items/s and belt speed is 5 items/s, only 2 structures are allowed
         /// </summary>
-        public decimal StructureLimit_Output = 0;
+        public Fraction StructureLimit_Output = 0;
 
         /// <summary>
         /// Max number of assemblers/smelters/etc. for a full belt or products based on the input, assuming 1 product per belt
         /// </summary>
         /// <returns></returns>
-        public decimal StructureLimit_Input = 0;
+        public Fraction StructureLimit_Input = 0;
 
-        private decimal _structureLimit = 0;
-
-        [Description("Production Scale")]
-        /// <summary>
-        /// Based on structure limit with a 1:1 input/output scale
-        /// </summary>
-        /// <returns></returns>
-        public decimal ProductionScale
-        {
-            get
-            {
-                if (StructureLimit == 0)
-                {
-                    return 0;
-                }
-
-                return Math.Ceiling(StructuresNeeded / StructureLimit);
-            }
-
-        }
+        private Fraction _structureLimit = 0;
 
         [Description("Structure Limit")]
         public decimal StructureLimit
@@ -63,7 +66,7 @@ namespace DSPCalculator.Items
                     _structureLimit = CalculateStructureLimit();
                 }
 
-                return _structureLimit;
+                return Math.Floor(_structureLimit.ToDecimal());
             }
         }
 
@@ -103,16 +106,36 @@ namespace DSPCalculator.Items
                 {
                     return "N/A";
                 }
-                Fraction numerator = new Fraction(StructureLimit_Input);
-                Fraction denominator = new Fraction(StructureLimit_Output);
+                Fraction numerator = StructureLimit_Input;
+                Fraction denominator = StructureLimit_Output;
                 Fraction fraction = (numerator / denominator).Reduce();
 
-                return $"{fraction.Numerator}:{fraction.Denominator}";
+                return $"{fraction.Numerator}/{fraction.Denominator}";
             }
         }
 
         [Description("Produced in assembler")]
         public bool ProducedInAssembler => Recipe == null ? false : Recipe.IsProducedInAssembler;
+
+        [Description("Produced in smelter")]
+        public bool ProducedInSmelter => Recipe == null ? false : Recipe.IsProducedInSmelter;
+
+        [Description("Vessels Needed")]
+        public decimal VesselsNeeded
+        {
+            get
+            {
+                decimal totalDistance = GlobalHelper.AVERAGE_DISTANCE * 2; // back and forth
+                decimal secondsPerDelivery = (totalDistance / GlobalHelper.WARP_SPEED + 1.5m) * 2; // it takes 1.5s to land, fixed time, not affected by warp speed. This is an estimate only
+                decimal numOfDeliveriesPerMinute = 60 / secondsPerDelivery;
+                decimal amountDeliveredPerMinute = GlobalHelper.VESSEL_CAPACITY * numOfDeliveriesPerMinute;
+
+                decimal vesselsNeeded = RequiredOutput / amountDeliveredPerMinute;
+
+                return Math.Round(vesselsNeeded, 2);
+            }
+        }
+
 
         // requested output of an item from the excel sheet
         [Description(GlobalHelper.REQUESTED_OUTPUT)]
@@ -125,6 +148,37 @@ namespace DSPCalculator.Items
         [Description("Actual Output")]
         public decimal ActualOutput;
 
+        // Production rate for a full scale of MaxStructure
+        [Description("Production Rate - Full scale")]
+        public decimal ProductionRatePerSector => Recipe == null ? 0 : StructureLimit * Recipe.OutputProductionRate(this.GetType());
+
+        private int _tier = 0;
+
+        [Description("Tier")]
+        public int Tier
+        {
+            get
+            {
+                if (_tier == 0)
+                {
+                    if (Recipe == null)
+                    {
+                        return 0;
+                    }
+
+                    int min = 0;
+
+                    foreach (var input in Recipe.Input)
+                    {
+                        min = Math.Max(GetItem(input.ItemType).Tier, min);
+                    }
+
+                    _tier = min + 1;
+                }
+
+                return _tier;
+            }
+        }
         public bool IsOutputSatisfied()
         {
             // If current production chain can provide more than needed
@@ -133,19 +187,28 @@ namespace DSPCalculator.Items
 
         private void CalculateStructureLimit_Output()
         {
+            if (debug)
+            {
+
+            }
+
             if (Recipe == null)
             {
                 return;
             }
 
-            decimal max = int.MaxValue;
+            Fraction max = int.MaxValue;
             foreach (ItemToAmount output in Recipe.Output)
             {
                 decimal outputRate = Recipe.OutputProductionRate(output.ItemType);
                 decimal beltSpeed = GlobalHelper.BeltSpeed;
-                max = Math.Min(beltSpeed / outputRate, max);
+                Fraction fraction = new Fraction(beltSpeed) / new Fraction(outputRate);
+                if (fraction < max)
+                {
+                    max = fraction;
+                }
             }
-            StructureLimit_Output = Math.Round(max,2);
+            StructureLimit_Output = max;
         }
 
         private void CalculateStructureLimit_Input()
@@ -155,26 +218,35 @@ namespace DSPCalculator.Items
                 return;
             }
 
-            decimal max = int.MaxValue;
+            Fraction max = int.MaxValue;
             foreach (ItemToAmount input in Recipe.Input)
             {
                 decimal inputRate = Recipe.InputProductionRate(input.ItemType);
                 decimal beltSpeed = GlobalHelper.BeltSpeed;
-                max = Math.Min(beltSpeed / inputRate, max);
+                Fraction fraction = new Fraction(beltSpeed) / new Fraction(inputRate);
+                if (fraction < max)
+                {
+                    max = fraction;
+                }
             }
 
-            StructureLimit_Input = Math.Round(max, 2);
+            StructureLimit_Input = max;
         }
 
         /// <summary>
         /// Max number of assemblers/smelters/etc. for a full belt or products based on the input and output
         /// </summary>
         /// <returns></returns>
-        private decimal CalculateStructureLimit()
+        private Fraction CalculateStructureLimit()
         {
             CalculateStructureLimit_Output();
             CalculateStructureLimit_Input();
-            return Math.Min(StructureLimit_Input, StructureLimit_Output);
+            if (StructureLimit_Input < StructureLimit_Output)
+            {
+                return StructureLimit_Input;
+            }
+
+            return StructureLimit_Output;
         }
 
         public void CalculateProductionChain()
@@ -191,13 +263,13 @@ namespace DSPCalculator.Items
 
             foreach (ItemToAmount input in Recipe.Input)
             {
-                BaseItem item = GlobalHelper.GetItem(input.ItemType);
+                BaseItem item = BaseItem.GetItem(input.ItemType);
                 item.RequiredOutput += Recipe.InputProductionRate(input.ItemType) * scale;
             }
 
             foreach (ItemToAmount output in Recipe.Output)
             {
-                BaseItem item = GlobalHelper.GetItem(output.ItemType);
+                BaseItem item = BaseItem.GetItem(output.ItemType);
                 item.ActualOutput += Recipe.OutputProductionRate(output.ItemType) * scale;
             }
         }

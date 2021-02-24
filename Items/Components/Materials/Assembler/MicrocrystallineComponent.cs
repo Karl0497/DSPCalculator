@@ -8,7 +8,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public MicrocrystallineComponent()
         {
-            MainRecipe = new Recipe().WithInput<Silicon>(2).WithInput<CopperIngot>().WithCycleTime().WithOutput<MicrocrystallineComponent>().WithCycleTime(2).ProducedInAssembler();
+            MainRecipe = new Recipe().WithInput<SiliconIngot>(2).WithInput<CopperIngot>().WithCycleTime().WithOutput<MicrocrystallineComponent>().WithCycleTime(2).ProducedInAssembler();
         }
     }
 }

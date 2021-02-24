@@ -62,7 +62,7 @@ namespace DSPCalculator
                     break;
                 }
 
-                BaseItem item = GlobalHelper.GetItem(nameCell.Value.ToString());
+                BaseItem item = BaseItem.GetItem(nameCell.Value.ToString());
                 if (item == null || requestCell.Value == null)
                 {
                     row++;
@@ -135,7 +135,7 @@ namespace DSPCalculator
 
         public static void WriteExcelFile()
         {
-            foreach (var item in GlobalHelper.AllItems)
+            foreach (var item in BaseItem.AllItems)
             {
                 int row = FindRowIndex(item.GetType().Name);
                 Worksheet.Cells[row, FindColumnIndex(GlobalHelper.ITEM)].Value = item.GetType().Name;
@@ -191,14 +191,14 @@ namespace DSPCalculator
             foreach (Type type in allItemTypes)
             {
                 BaseItem instance = (BaseItem)Activator.CreateInstance(type);
-                GlobalHelper.AllItems.Add(instance);
+                BaseItem.AllItems.Add(instance);
             }
 
             OpenExcelFile();
             GetRequests();
             while (true)
             {
-                BaseItem item = GlobalHelper.ItemsToProcess().FirstOrDefault();
+                BaseItem item = BaseItem.ItemsToProcess().FirstOrDefault();
                 if (item == null)
                 {
                     break;

@@ -8,7 +8,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public Steel()
         {
-            MainRecipe = new Recipe().WithBasicProduction<IronIngot, Steel>(3, 1, 3);
+            MainRecipe = new Recipe().WithBasicProduction<IronIngot, Steel>(3, 1, 3).ProducedInSmelter();
         }
     }
 }

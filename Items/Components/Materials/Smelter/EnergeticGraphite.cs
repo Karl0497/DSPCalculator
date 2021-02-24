@@ -9,7 +9,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public EnergeticGraphite()
         {
-            MainRecipe = new Recipe().WithBasicProduction<CoalOre, EnergeticGraphite>(2, 1, 2);
+            MainRecipe = new Recipe().WithBasicProduction<CoalOre, EnergeticGraphite>(2, 1, 2).ProducedInSmelter();
         }
     }
 }

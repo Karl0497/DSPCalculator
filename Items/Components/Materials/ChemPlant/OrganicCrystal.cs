@@ -8,7 +8,6 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public OrganicCrystal()
         {
-            MainRecipe = new Recipe().WithInput<Plastic>(2).WithInput<RefinedOil>().WithInput<Water>().WithOutput<OrganicCrystal>().WithCycleTime(6);
         }
     }
 }

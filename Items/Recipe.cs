@@ -65,6 +65,7 @@ namespace DSPCalculator.Items
         public decimal CycleTime;
 
         public bool IsProducedInAssembler;
+        public bool IsProducedInSmelter;
 
         public Recipe WithInput<T>(int amount = 1) where T : BaseItem
         {
@@ -91,6 +92,13 @@ namespace DSPCalculator.Items
         public Recipe ProducedInAssembler()
         {
             IsProducedInAssembler = true;
+
+            return this;
+        }
+
+        public Recipe ProducedInSmelter()
+        {
+            IsProducedInSmelter = true;
 
             return this;
         }

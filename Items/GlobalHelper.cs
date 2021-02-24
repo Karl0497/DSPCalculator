@@ -13,28 +13,12 @@ namespace DSPCalculator.Items
 
         public static int BeltSpeed = 30 * 60; // 30 items per second
 
-        public static IList<BaseItem> AllItems = new List<BaseItem>();
 
-        public static BaseItem GetItem(Type type)
-        {
-            return AllItems.FirstOrDefault(x => x.GetType() == type);
-        }
 
-        public static BaseItem GetItem(string className)
-        {
-            return AllItems.FirstOrDefault(x => x.GetType().Name == className);
-        }
 
-        public static BaseItem GetItem<T>() where T : BaseItem
-        {
-            return GetItem(typeof(T));
-        }
-
-        public static IList<BaseItem> ItemsToProcess()
-        {
-            return AllItems.Where(x => !x.IsOutputSatisfied()).ToList();
-        }
-
+        public static decimal WARP_SPEED = 5; // LY/s
+        public static decimal AVERAGE_DISTANCE = 50; // LYs between planets
+        public static decimal VESSEL_CAPACITY = 1000; // LYs between planets
         public static int STARTING_ROW = 1;
         public static int STARTING_COLUMN = 1;
         public static string ITEM = "Item";
