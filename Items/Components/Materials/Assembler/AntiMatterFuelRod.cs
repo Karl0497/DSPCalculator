@@ -11,7 +11,7 @@ namespace DSPCalculator.Items.Components.Materials
     {
         public AntiMatterFuelRod()
         {
-            MainRecipe = new Recipe().WithInput<AntiMatter>(10).WithInput<Hydrogen>(10).WithInput<AnnihilationConstraintSphere>().WithInput<TitaniumAlloy>().WithOutput<AntiMatterFuelRod>().WithCycleTime(12);
+            MainRecipe = new Recipe().WithInput<AntiMatter>(10).WithInput<Hydrogen>(10).WithInput<AnnihilationConstraintSphere>().WithInput<TitaniumAlloy>().WithOutput<AntiMatterFuelRod>().WithCycleTime(12).ProducedInAssembler();
         }
     }
 }

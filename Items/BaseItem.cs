@@ -40,7 +40,7 @@ namespace DSPCalculator.Items
 
         public Recipe AlternativeRecipe = null;
 
-        public bool debug { get { return this.GetType().Name == "CasimirCrystal"; } }
+        public bool debug { get { return this.GetType().Name == "ParticleContainer"; } }
             
         /// <summary>
         /// Max number of assemblers/smelters/etc. for a full belt or products based on the output, assuming 1 product per belt because only maniacs would put all products on the same belt
@@ -66,7 +66,7 @@ namespace DSPCalculator.Items
                     _structureLimit = CalculateStructureLimit();
                 }
 
-                return Math.Floor(_structureLimit.ToDecimal());
+                return Math.Round(_structureLimit.ToDecimal(), 2);
             }
         }
 
@@ -120,23 +120,6 @@ namespace DSPCalculator.Items
         [Description("Produced in smelter")]
         public bool ProducedInSmelter => Recipe == null ? false : Recipe.IsProducedInSmelter;
 
-        [Description("Vessels Needed")]
-        public decimal VesselsNeeded
-        {
-            get
-            {
-                decimal totalDistance = GlobalHelper.AVERAGE_DISTANCE * 2; // back and forth
-                decimal secondsPerDelivery = (totalDistance / GlobalHelper.WARP_SPEED + 1.5m) * 2; // it takes 1.5s to land, fixed time, not affected by warp speed. This is an estimate only
-                decimal numOfDeliveriesPerMinute = 60 / secondsPerDelivery;
-                decimal amountDeliveredPerMinute = GlobalHelper.VESSEL_CAPACITY * numOfDeliveriesPerMinute;
-
-                decimal vesselsNeeded = RequiredOutput / amountDeliveredPerMinute;
-
-                return Math.Round(vesselsNeeded, 2);
-            }
-        }
-
-
         // requested output of an item from the excel sheet
         [Description(GlobalHelper.REQUESTED_OUTPUT)]
         public decimal RequestedOutput;
@@ -151,6 +134,12 @@ namespace DSPCalculator.Items
         // Production rate for a full scale of MaxStructure
         [Description("Production Rate - Full scale")]
         public decimal ProductionRatePerSector => Recipe == null ? 0 : StructureLimit * Recipe.OutputProductionRate(this.GetType());
+
+        [Description("Note - Structures per station")]
+        public string Note;
+        
+        [Description("Location")]
+        public string Location;
 
         private int _tier = 0;
 
